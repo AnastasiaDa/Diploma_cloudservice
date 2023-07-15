@@ -1,9 +1,6 @@
 package com.example.diploma_cloudservice.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,15 +8,24 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Builder
 @Table(name = "files")
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Files {
-
     @Id
-    @Column
-    private String fileName;
-    private byte[] fileContent;
+    @Column(nullable = false, unique = true)
+    private String filename;
 
+    @Column(nullable = false)
+    private Long size;
+
+    @Column(nullable = false)
+    private String type;
+
+    @Lob
+    private byte[] content;
+
+    @ManyToOne
+    private Users user;
 }

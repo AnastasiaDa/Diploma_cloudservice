@@ -1,44 +1,54 @@
 package com.example.diploma_cloudservice.Controller;
 
-import com.example.diploma_cloudservice.Entity.Files;
-import com.example.diploma_cloudservice.Service.FileService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.diploma_cloudservice.Entity.Files;
+import com.example.diploma_cloudservice.Service.FileService;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/file")
 @AllArgsConstructor
-@Validated
+@RequestMapping("/file")
+@CrossOrigin(origins = "http://localhost:800")
 public class FileController {
 
-    private final FileService fileService;
+    private FileService service;
 
-    @PostMapping
-    public void uploadFile() {
-//        придумать как загружать
-    }
-
-    @GetMapping()
-    public void getFile() {
-//        придумать метод получения файла
+    @PostMapping()
+    public ResponseEntity<?> uploadFile(@RequestHeader("auth-token") String authToken,
+                                        @RequestParam("filename") String filename, MultipartFile file) {
+        service.uploadFile(authToken, filename, file);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping()
-    public void deleteFile() {
-//        придумать как удалять файл
+    public ResponseEntity<?> deleteFile(@RequestHeader("auth-token") String authToken,
+                                        @RequestParam("filename") String filename) {
+        service.deleteFile(authToken, filename);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    @PutMapping
-    public void editFile() {
-//        придумать метод редактирования файла
+    @GetMapping(produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<byte[]> downloadFile(@RequestHeader("auth-token") String authToken,
+                                          @RequestParam("filename") String filename) {
+        Files file = service.downloadFile(authToken, filename);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(file.getType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                .body(file.getContent());
     }
 
+    @PutMapping()
+    public ResponseEntity<?> editFileName(@RequestHeader("auth-token") String authToken,
+                                          @RequestParam("filename") String filename,
+                                          @RequestBody Map<String, String> fileNameRequest) {
+        service.editFileName(authToken, filename, fileNameRequest.get("filename"));
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 }
