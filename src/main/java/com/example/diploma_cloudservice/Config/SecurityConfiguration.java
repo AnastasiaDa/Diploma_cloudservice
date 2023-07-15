@@ -22,6 +22,7 @@ import com.example.diploma_cloudservice.Service.UserService;
 @EnableWebSecurity
 @AllArgsConstructor
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
+@SuppressWarnings("removal")
 public class SecurityConfiguration {
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -46,17 +47,24 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        http.cors().and().csrf().disable()
-                .headers().frameOptions().disable()
+        http.cors()
+                .and()
+                .csrf()
+                .disable()
+                .headers()
+                .frameOptions()
+                .disable()
 
                 .and()
-                .authorizeRequests().antMatchers("/h2-console/**", "/login")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/login")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
+                )
 
-                .and()
-                .logout().logoutUrl("/logout")
+                .logout()
+                .logoutUrl("/logout")
                 .deleteCookies("JSESSIONID")
                 .clearAuthentication(true)
                 .logoutSuccessUrl("/login")
