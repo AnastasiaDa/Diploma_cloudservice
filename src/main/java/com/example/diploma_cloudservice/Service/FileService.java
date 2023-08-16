@@ -6,8 +6,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.diploma_cloudservice.Entity.Files;
-import com.example.diploma_cloudservice.Entity.Users;
+import com.example.diploma_cloudservice.Entity.File;
+import com.example.diploma_cloudservice.Entity.User;
 import com.example.diploma_cloudservice.Exeptions.InputDataException;
 import com.example.diploma_cloudservice.Exeptions.UnauthorizedException;
 import com.example.diploma_cloudservice.Dto.FileResponse;
@@ -16,7 +16,6 @@ import com.example.diploma_cloudservice.Repo.FileRepository;
 import com.example.diploma_cloudservice.Repo.UserRepository;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,12 +30,12 @@ public class FileService {
     UserRepository userRepository;
 
     public void uploadFile(String authToken, String filename, MultipartFile file) {
-        final Users user = getUser(authToken);
+        final User user = getUser(authToken);
         if (user == null) {
             throw new UnauthorizedException("Unauthorized error");
         }
         try {
-            fileRepository.save(new Files(filename, file.getSize(), file.getContentType(), file.getBytes(), user));
+            fileRepository.save(new File(filename, file.getSize(), file.getContentType(), file.getBytes(), user));
             log.info("User {} upload file {}", user.getLogin(), filename);
         } catch (IOException e) {
             log.error("Upload file error");
@@ -45,7 +44,7 @@ public class FileService {
     }
 
     public void deleteFile(String authToken, String filename) {
-        final Users user = getUser(authToken);
+        final User user = getUser(authToken);
         if (user == null) {
             log.error("Delete file error");
             throw new UnauthorizedException("Unauthorized error");
@@ -54,12 +53,12 @@ public class FileService {
         fileRepository.removeByUserAndFilename(user, filename);
     }
 
-    public Files downloadFile(String authToken, String filename) {
-        final Users user = getUser(authToken);
+    public File downloadFile(String authToken, String filename) {
+        final User user = getUser(authToken);
         if (user == null) {
             throw new UnauthorizedException("Unauthorized error");
         }
-        final Files file = fileRepository.findByUserAndFilename(user, filename);
+        final File file = fileRepository.findByUserAndFilename(user, filename);
         if (file == null) {
             log.error("Download file error");
             throw new InputDataException("Error input data");
@@ -69,7 +68,7 @@ public class FileService {
     }
 
     public void editFileName(String authToken, String filename, String newFileName) {
-        final Users user = getUser(authToken);
+        final User user = getUser(authToken);
         if (user == null) {
             log.error("Edit file error");
             throw new UnauthorizedException("Unauthorized error");
@@ -83,7 +82,7 @@ public class FileService {
     }
 
     public List<FileResponse> getAllFiles(String authToken, Integer limit) {
-        final Users user = getUser(authToken);
+        final User user = getUser(authToken);
         if (user == null) {
             log.error("Get all files error");
             throw new UnauthorizedException("Unauthorized error");
@@ -94,7 +93,7 @@ public class FileService {
                 .collect(Collectors.toList());
     }
 
-    private Users getUser(String authToken) {
+    private User getUser(String authToken) {
         if (authToken.startsWith("Bearer ")) {
             authToken = authToken.substring(7);
         }

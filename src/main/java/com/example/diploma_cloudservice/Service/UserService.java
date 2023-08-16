@@ -2,12 +2,11 @@ package com.example.diploma_cloudservice.Service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.example.diploma_cloudservice.Entity.Users;
+import com.example.diploma_cloudservice.Entity.User;
 import com.example.diploma_cloudservice.Exeptions.UnauthorizedException;
 import com.example.diploma_cloudservice.Repo.UserRepository;
 
@@ -22,11 +21,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users myUser = userRepository.findByLogin(username)
+        User myUser = userRepository.findByLogin(username)
                 .orElseThrow(() -> new UnauthorizedException("Unauthorized error"));
         List<GrantedAuthority> authorities = new ArrayList<>();
         //authorities.add(new SimpleGrantedAuthority("READ"));
-        return User.builder()
+        return org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getLogin())
                 .password(myUser.getPassword())
                 .authorities(authorities)

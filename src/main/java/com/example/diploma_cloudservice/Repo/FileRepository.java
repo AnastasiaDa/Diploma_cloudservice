@@ -6,20 +6,20 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import com.example.diploma_cloudservice.Entity.Files;
-import com.example.diploma_cloudservice.Entity.Users;
+import com.example.diploma_cloudservice.Entity.File;
+import com.example.diploma_cloudservice.Entity.User;
 
 import java.util.List;
 
 @Repository
-public interface FileRepository  extends JpaRepository<Files, String> {
+public interface FileRepository  extends JpaRepository<File, String> {
 
-    Files findByUserAndFilename(Users user, String filename);
-    void removeByUserAndFilename(Users user, String filename);
-    List<Files> findAllByUser(Users user, Sort sort);
+    File findByUserAndFilename(User user, String filename);
+    void removeByUserAndFilename(User user, String filename);
+    List<File> findAllByUser(User user, Sort sort);
 
     @Modifying
-    @Query("update Files f set f.filename = :newName where f.filename = :filename and f.user = :user")
-    void editFileNameByUser(@Param("user") Users user, @Param("filename") String filename, @Param("newName") String newName);
+    @Query("update File f set f.filename = :newName where f.filename = :filename and f.user = :user")
+    void editFileNameByUser(@Param("user") User user, @Param("filename") String filename, @Param("newName") String newName);
 
 }

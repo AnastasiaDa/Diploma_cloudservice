@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Files {
+public class File {
     @Id
     @Column(nullable = false, unique = true)
     private String filename;
@@ -27,5 +27,5 @@ public class Files {
     private byte[] content;
 
     @ManyToOne
-    private Users user;
+    private User user;
 }

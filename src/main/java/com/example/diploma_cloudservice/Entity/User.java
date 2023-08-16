@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Users {
+public class User {
     @Id
     @Column(nullable = false, unique = true)
     private String login;
@@ -23,6 +23,6 @@ public class Users {
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Files> userFiles;
+    private List<File> userFiles;
 
 }

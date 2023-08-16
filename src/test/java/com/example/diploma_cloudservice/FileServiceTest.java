@@ -1,6 +1,6 @@
 package com.example.diploma_cloudservice;
 
-import com.example.diploma_cloudservice.Entity.Users;
+import com.example.diploma_cloudservice.Entity.User;
 import com.example.diploma_cloudservice.Repo.AuthorizationRepository;
 import com.example.diploma_cloudservice.Repo.FileRepository;
 import com.example.diploma_cloudservice.Repo.UserRepository;
@@ -34,7 +34,7 @@ public class FileServiceTest {
 
     public static final String LOGIN_1 = "login1";
     public static final String PASSWORD_1 = "pass1";
-    public static final Users USER_1 = new Users(LOGIN_1, PASSWORD_1, null);
+    public static final User USER_1 = new User(LOGIN_1, PASSWORD_1, null);
     public static final String TOKEN = "token";
     public static final String FILENAME_1 = "fileName1";
     public static final String FILENAME_2 = "fileName2";

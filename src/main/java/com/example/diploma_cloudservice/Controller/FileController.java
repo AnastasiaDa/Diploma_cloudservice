@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.diploma_cloudservice.Entity.Files;
+import com.example.diploma_cloudservice.Entity.File;
 import com.example.diploma_cloudservice.Service.FileService;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ public class FileController {
     @GetMapping(produces = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<byte[]> downloadFile(@RequestHeader("auth-token") String authToken,
                                           @RequestParam("filename") String filename) {
-        Files file = service.downloadFile(authToken, filename);
+        File file = service.downloadFile(authToken, filename);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(file.getType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
