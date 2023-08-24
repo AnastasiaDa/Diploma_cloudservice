@@ -29,18 +29,13 @@ public class FileService {
     AuthorizationRepository authorizationRepository;
     UserRepository userRepository;
 
-    public void uploadFile(String authToken, String filename, MultipartFile file) {
+    public void uploadFile(String authToken, String filename, File file) {
         final User user = getUser(authToken);
         if (user == null) {
             throw new UnauthorizedException("Unauthorized error");
         }
-        try {
-            fileRepository.save(new File(filename, file.getSize(), file.getContentType(), file.getBytes(), user));
-            log.info("User {} upload file {}", user.getLogin(), filename);
-        } catch (IOException e) {
-            log.error("Upload file error");
-            throw new InputDataException("Input data exception");
-        }
+        fileRepository.save(new File(filename, file.getSize(), file.getType(), file.getContent(), user));
+        log.info("User {} upload file {}", user.getLogin(), filename);
     }
 
     public void deleteFile(String authToken, String filename) {
@@ -98,7 +93,7 @@ public class FileService {
             authToken = authToken.substring(7);
         }
         final String username = authorizationRepository.getUserNameByToken(authToken);
-            return userRepository.findByLogin(username)
-                    .orElseThrow(() -> new UnauthorizedException("Unauthorized error"));
+        return userRepository.findByLogin(username)
+                .orElseThrow(() -> new UnauthorizedException("Unauthorized error"));
     }
 }
